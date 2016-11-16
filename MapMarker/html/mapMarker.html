@@ -1,0 +1,241 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>MapMarker</title>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=HZfqDHAQFBg7tLMsVSE1VuOH"></script>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Loading Flat UI -->
+    <link href="../css/flat-ui.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../css/map.css" rel="stylesheet">
+
+
+    
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-3">
+            <span class="sr-only">Toggle navigation</span>
+          </button>
+          <a class="navbar-brand" href="#">MapMarker</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="navbar-collapse-3">
+
+          <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cigar <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="../php/Controller.php" >Save Map</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Log Out</a></li>
+              </ul>
+            </li>
+            <li><a href="#"><span class="visible-sm visible-xs">Settings<span class="fui-gear"></span></span><span class="visible-md visible-lg"><span class="fui-gear"></span></span></a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Messages<span class="navbar-unread">1</span></a></li>
+            <li class="active"><a href="#">About Us</a></li>
+            <li><a href="#">Clients</a></li>
+          </ul>
+          <form class="navbar-form navbar-right" action="#" role="search">
+            <div class="form-group">
+              <div class="input-group">
+                <input class="form-control" id="navbarSearchInput" type="search" placeholder="Search">
+                <span class="input-group-btn">
+                  <button type="submit" class="btn"><span class="fui-search"></span></button>
+                </span>
+              </div>
+            </div>
+            <div id="searchResultPanel" style="border:1px solid #C0C0C0;width:150px;height:auto; display:none;"></div>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="row row-offcanvas row-offcanvas-right">
+       <div  class="col-xs-12 col-sm-12" id ="allmap">
+       </div>
+      </div>
+
+    </div> <!-- /container -->
+
+
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../js/jquery.min.js"></script>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <!--<script src="../js/vendor/jquery.min.js"></script>-->
+    <script src="../js/flat-ui.min.js"></script>
+
+    <script src="../js/application.js"></script>
+    <script src="../js/drawingManager.js"></script>
+    <!--加载鼠标绘制工具-->
+    <script type="text/javascript" src="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
+    <link rel="stylesheet" href="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css" />
+    <!--加载检索信息窗口-->
+    <script type="text/javascript" src="http://api.map.baidu.com/library/SearchInfoWindow/1.4/src/SearchInfoWindow_min.js"></script>
+    <link rel="stylesheet" href="http://api.map.baidu.com/library/SearchInfoWindow/1.4/src/SearchInfoWindow_min.css" />
+    <script type="text/javascript">
+      // 百度地图API功能
+
+      function G(id) {
+        return document.getElementById(id);
+      }
+      var map = new BMap.Map("allmap");
+
+      var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_TOP_LEFT});// 左上角，添加比例尺
+      var top_left_navigation = new BMap.NavigationControl();  //左上角，添加默认缩放平移控件
+      //var top_right_navigation = new BMap.NavigationControl({anchor: BMAP_ANCHOR_TOP_RIGHT, type: BMAP_NAVIGATION_CONTROL_SMALL}); //右上角，仅包含平移和缩放按钮
+
+      map.addControl(top_left_navigation);
+      map.addControl(top_left_navigation);     
+      //map.addControl(top_right_navigation);
+      /*缩放控件type有四种类型:
+      BMAP_NAVIGATION_CONTROL_SMALL：仅包含平移和缩放按钮；BMAP_NAVIGATION_CONTROL_PAN:仅包含平移按钮；BMAP_NAVIGATION_CONTROL_ZOOM:仅包含缩放按钮*/
+
+      map.centerAndZoom(new BMap.Point(116.404, 39.915), 11);
+
+      var overlays = [];
+      var overlaycomplete = function(e){
+        overlays.push(e.overlay);
+      };
+      var styleOptions = {
+        strokeColor:"red",    //边线颜色。
+        fillColor:"red",      //填充颜色。当参数为空时，圆形将没有填充效果。
+        strokeWeight: 3,       //边线的宽度，以像素为单位。
+        strokeOpacity: 0.8,    //边线透明度，取值范围0 - 1。
+        fillOpacity: 0.6,      //填充的透明度，取值范围0 - 1。
+        strokeStyle: 'solid' //边线的样式，solid或dashed。
+      }
+      //实例化鼠标绘制工具
+      var drawingManager = new BMapLib.DrawingManager(map, {
+        isOpen: false, //是否开启绘制模式
+        enableDrawingTool: true, //是否显示工具栏
+        drawingToolOptions: {
+            anchor: BMAP_ANCHOR_TOP_RIGHT, //位置
+            offset: new BMap.Size(5, 5), //偏离值
+        },
+        circleOptions: styleOptions, //圆的样式
+        polylineOptions: styleOptions, //线的样式
+        polygonOptions: styleOptions, //多边形的样式
+        rectangleOptions: styleOptions //矩形的样式
+      });  
+      //添加鼠标绘制工具监听事件，用于获取绘制结果
+      drawingManager.addEventListener('overlaycomplete', overlaycomplete);
+
+
+      function getPointInfo(e){
+        alert(e.point.lng + ", " + e.point.lat);
+        var point = new BMap.Point(e.point.lng,e.point.lat);
+        addMarker(point);
+      }
+
+      function addMarker(point){
+        var marker = new BMap.Marker(point);
+        map.addOverlay(marker);
+      }
+
+      map.addEventListener("click", getPointInfo);
+
+      var ac = new BMap.Autocomplete(    //建立一个自动完成的对象
+      {"input" : "navbarSearchInput"
+        ,"location" : map
+      });
+
+      ac.addEventListener("onhighlight", function(e) {  //鼠标放在下拉列表上的事件
+      var str = "";
+        var _value = e.fromitem.value;
+        var value = "";
+        if (e.fromitem.index > -1) {
+          value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+        }    
+        str = "FromItem<br />index = " + e.fromitem.index + "<br />value = " + value;
+        
+        value = "";
+        if (e.toitem.index > -1) {
+          _value = e.toitem.value;
+          value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+        }    
+        str += "<br />ToItem<br />index = " + e.toitem.index + "<br />value = " + value;
+        G("searchResultPanel").innerHTML = str;
+      });
+
+      var myValue;
+      ac.addEventListener("onconfirm", function(e) {    //鼠标点击下拉列表后的事件
+      var _value = e.item.value;
+        myValue = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+        G("searchResultPanel").innerHTML ="onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
+        
+        setPlace();
+      });
+
+      function setPlace(){
+        /*map.clearOverlays();*/    //清除地图上所有覆盖物
+        function myFun(){
+          var pp = local.getResults().getPoi(0).point;    //获取第一个智能搜索的结果
+          map.centerAndZoom(pp, 18);
+          map.addOverlay(new BMap.Marker(pp));    //添加标注
+        }
+        var local = new BMap.LocalSearch(map, { //智能搜索
+          onSearchComplete: myFun
+        });
+        local.search(myValue);
+      }
+
+      function saveMapOverLays(e){
+        var params= overlays;
+        alert("success");
+        $.ajax({
+          type:"post",
+          url:"../php/Controller.php",
+          data:{
+              action:"mapController/saveMapOverLays",
+              params:overlays
+          },
+          dataType:"json",
+          success:function(msg){
+            alert("success!");
+          }
+
+
+        }); 
+      }
+
+    </script>
+
+  </body>
+</html>
+

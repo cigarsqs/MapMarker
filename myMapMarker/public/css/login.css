@@ -1,0 +1,102 @@
+html{
+	font-family: sans-serif;
+	-webkit-text-highlight-color:rgba(0,0,0,0);
+}
+body{
+	font-family: "Lato", Helvetica, Arial, sans-serif;
+	font-size: 18px;
+	line-height: 1.72222;
+	color: #34495e;
+	background-color: #fff;
+}
+div{
+	display: block;
+}
+.container {
+	width: 970px !important;
+}
+.login-screen{
+	min-height: 473px;
+	background: #1abc9c;
+	padding: 123px 119px 33px 306px
+}
+
+*{
+	box-sizing:border-box;
+}
+
+.login{
+	position: relative;
+	padding: 38px 38px 267px;
+	margin-bottom: 77px;
+	color: #fff;
+	background-image:url(../img/imac-2x.png);
+	background: url(../img/imac.png) 0 0 no-repeat;
+	background-size: 940px 778px;	
+}
+.login-icon{
+	position: absolute;
+	top:160px;
+	left: 200px;
+	width: 96px;
+}
+.login-icon > img {
+	display: block;
+	width: 100%;
+	margin-bottom: 6px;
+}
+img {
+	vertical-align: middle;
+	border:0;
+}
+.login-icon > h4 {
+	font-size: 17px;
+	font-weight: 300;
+	line-height: 34px;
+	opacity: .95;
+}
+h4,h5,h6{
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+.login-form {
+	position: relative;
+	padding: 24px 23px 20px;
+	background-color: #edeff1;
+	border-radius: 6px;
+}
+.form-group {
+	position: relative;
+	margin-bottom: 20px;
+}
+.form-control {
+	display: block;
+	width: 100%;
+	background-color: #fff;
+	height: 42px;
+	padding: 8px 12px;
+	font-family: "Lato", Helvetica,Arial,sans-serif;
+	line-height: 1.467;
+	border-radius: 6px;
+	box-shadow: none;
+}
+.login-form .login-field {
+	font-size: 17px;
+	text-indent: 3px;
+	border-color: transparent;
+}
+.login-form .login-field-icon {
+	position: absolute;
+	top: 3px;
+	right: 15px;
+	font-size: 16px;
+	color: #bfc9ca;
+}
+.login-form .login-link {
+	display: block;
+	margin-top: 15px;
+	font-size: 13px;
+	color: #bfc9ca;
+	text-align: center;
+}
+
